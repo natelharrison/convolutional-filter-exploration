@@ -3,7 +3,6 @@ import numpy as np
 def naive_2d_convolve(image: np.ndarray, kernel: np.ndarray) -> np.ndarray:
     """
     Simple loop-based implementation for educational purposes.
-    Limited to uint8 images.
     :param image:
     :param kernel:
     :return:
@@ -32,13 +31,12 @@ def naive_2d_convolve(image: np.ndarray, kernel: np.ndarray) -> np.ndarray:
                     new_pixel_value += image_padded[y + k_y, x + k_x] * kernel[k_y, k_x]
             image_convolution[y, x] = new_pixel_value
 
-    return np.clip(image_convolution, 0, 255, out=image_convolution).astype(np.uint8)
+    return image_convolution.astype(image.dtype)
 
 
 def numpy_2d_convolve(image: np.ndarray, kernel: np.ndarray) -> np.ndarray:
     """
     Optimized(?) NumPy Implementation.
-    Limited to uint8 images.
     :param image:
     :param kernel:
     :return:
@@ -61,5 +59,5 @@ def numpy_2d_convolve(image: np.ndarray, kernel: np.ndarray) -> np.ndarray:
     image_views = np.lib.stride_tricks.as_strided(image_padded, shape=(H, W, kH, kW), strides=(s0, s1, s0, s1), writeable=False)
 
     image_convolution = np.einsum('ijab, ab->ij', image_views, kernel, optimize=True)
-    return np.clip(image_convolution, 0, 255, out=image_convolution).astype(np.uint8)
+    return image_convolution.astype(image.dtype)
 
